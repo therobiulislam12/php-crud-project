@@ -10,6 +10,26 @@
         $info = "Seeding is compleete";
     }
 
+    if(isset($_POST['submit'])){
+        $fname = htmlspecialchars(filter_input(INPUT_POST, 'fname'));
+        $lname= htmlspecialchars(filter_input(INPUT_POST, 'lname'));
+        $roll = htmlspecialchars(filter_input(INPUT_POST, 'roll'));
+        
+        if($fname != "" && $lname != "" && $roll != ""){
+
+            $result = addStudent($fname, $lname, $roll); 
+
+            if(!$result){
+                $info = "Same ID already exists!!!";
+            } else{
+                $info = "Student added successfully";
+            }
+            
+        } else { 
+            $info = "Please fill all the fields";
+        }
+    }
+
     
 ?>
 
@@ -49,12 +69,31 @@
             ?>
         </div>
     </div>
+
         <?php if('report' == $task){ ?>
         <div class="container">
             <div class="row">
                 <div class="column">
                     <?php generateReport(); ?>
                 </div>
+            </div>
+        </div>
+        <?php } ?>
+
+        <?php if('add' == $task){ ?>
+        <div class="container">
+            <div class="row">
+            <div class="column column-60 column-offset-20">
+                <form method="POST">
+                    <label for="fname">First Name</label>
+                    <input type="text" name="fname" id="fname">
+                    <label for="lname">Last Name</label>
+                    <input type="text" name="lname" id="lname">
+                    <label for="roll">Roll</label>
+                    <input type="number" name="roll" id="roll">
+                    <button type="submit" class="button-primary" name="submit">Save</button>
+                </form>
+            </div>
             </div>
         </div>
         <?php } ?>
