@@ -10,23 +10,47 @@
         $info = "Seeding is compleete";
     }
 
+    /**
+     * 
+     * Declare a variable like $fname $lname $roll 
+     * when user update a form, it's save our db, but if any error it's also stay
+     */
+
+    $fname = "";
+    $lname = "";
+    $roll = "";
+
+
     if(isset($_POST['submit'])){
         $fname = htmlspecialchars(filter_input(INPUT_POST, 'fname'));
         $lname= htmlspecialchars(filter_input(INPUT_POST, 'lname'));
         $roll = htmlspecialchars(filter_input(INPUT_POST, 'roll'));
+        $id = htmlspecialchars(filter_input(INPUT_POST, 'id'));
         
-        if($fname != "" && $lname != "" && $roll != ""){
+        if($id){
+            if($fname != "" && $lname != "" && $roll != ""){
+                $result = updateStudent($id, $fname, $lname, $roll);
 
-            $result = addStudent($fname, $lname, $roll); 
-
-            if(!$result){
-                $info = "Same ID already exists!!!";
-            } else{
-                $info = "Student added successfully";
+                if(!$result){
+                    $info = "Student Update successfully";
+                } else{
+                    $info = "Same Roll already exists!!!";
+                }
+               
+                
             }
-            
-        } else { 
-            $info = "Please fill all the fields";
+        } else{
+            if($fname != "" && $lname != "" && $roll != ""){
+                $result = addStudent($fname, $lname, $roll); 
+                if(!$result){
+                    $info = "Same ID already exists!!!";
+                } else{
+                    $info = "Student added successfully";
+                }
+                
+            } else { 
+                $info = "Please fill all the fields";
+            }
         }
     }
 
@@ -63,7 +87,7 @@
             <?php 
             
             if($info != ''){
-                echo "<p>{$info}</p>";
+                echo "<blockquote>{$info}</blockquote>";
             }
             
             ?>
@@ -86,17 +110,42 @@
             <div class="column column-60 column-offset-20">
                 <form method="POST">
                     <label for="fname">First Name</label>
-                    <input type="text" name="fname" id="fname">
+                    <input type="text" name="fname" id="fname" value="<?php echo $fname; ?>">
                     <label for="lname">Last Name</label>
-                    <input type="text" name="lname" id="lname">
+                    <input type="text" name="lname" id="lname" value="<?php echo $lname; ?>">
                     <label for="roll">Roll</label>
-                    <input type="number" name="roll" id="roll">
+                    <input type="number" name="roll" id="roll" value="<?php echo $roll; ?>">
                     <button type="submit" class="button-primary" name="submit">Save</button>
                 </form>
             </div>
             </div>
         </div>
         <?php } ?>
+
+        <?php if('edit' == $task){ 
+
+            $id = $_GET['id'];
+            $student = getStudent($id);
+
+            if($student){
+            ?>
+        <div class="container">
+            <div class="row">
+            <div class="column column-60 column-offset-20">
+                <form method="POST">
+                    <input type="hidden" name="id" value="<?php echo $student['id']; ?>">
+                    <label for="fname">First Name</label>
+                    <input type="text" name="fname" id="fname" value="<?php echo $student['fname']; ?>">
+                    <label for="lname">Last Name</label>
+                    <input type="text" name="lname" id="lname" value="<?php echo $student['lname']; ?>">
+                    <label for="roll">Roll</label>
+                    <input type="number" name="roll" id="roll" value="<?php echo $student['roll']; ?>">
+                    <button type="submit" class="button-primary" name="submit">Update</button>
+                </form>
+            </div>
+            </div>
+        </div>
+        <?php }} ?>
 
 </body>
 
